@@ -106,8 +106,8 @@
                 } else if (freq <= 24250000) {
                     arfcn_calculated = (freq - 3000000) / 15 + 600000;
                 } else {
-                    result1.innerHTML = "Frequency is out of range";
-                    return;
+                    // FR2 calculation
+                    arfcn_calculated = (freq - 24250080) / 60 + 2016667;
                 }
 
                 result1.innerHTML = "arfcn = " + arfcn_calculated.toFixed(0);
@@ -126,8 +126,8 @@
                 } else if (arfcn <= 2016666) {
                     freq_calculated = 3000000 + 15 * (arfcn - 600000);
                 } else {
-                    result2.innerHTML = "arfcn is out of range";
-                    return;
+                    // FR2 calculation
+                    freq_calculated = 24250080 + 60 * (arfcn - 2016667);
                 }
 
                 result2.innerHTML = "Freq = " + freq_calculated.toFixed(0) + " Hz";
@@ -145,13 +145,8 @@
             var freq_low = parseInt(document.getElementById("freq_low").value);
 			var freq_high = parseInt(document.getElementById("freq_high").value);
 			
-            var subCarrierSpacing = 30;
-			var offsetToCarrier = 0;
-			/*  38.104 n48 with SCS=15,30 kHz (common: kHz30)*/
-			/*  38.104 n78 with SCS=15,30 kHz (common: kHz30)*/
-			/*  38.104 n79 with SCS=15,30 kHz (common: kHz30)*/
-			/*  38.104 n257 with SCS=60,120 kHz (common: kHz120)*/
-			/*  38.104 n257 SS Block SCS=120,240 kHz (common: kHz120)*/
+            var offsetToCarrier = 0;
+			
             var nrBand = [
                 {'band' : 41, 'lowest_freq' : 2496000, 'highest_freq' : 2690000, 'lowest_n_ref' : 499200, 'highest_n_ref' : 537996, 'n_ref_step' : 6, 'lowest_gscn' : 6252, 'highest_gscn' : 6714, 'gscn_step' : 3},
 
@@ -168,6 +163,13 @@
                 {'band' : 257, 'lowest_freq' : 26500000, 'highest_freq' : 29500000, 'lowest_n_ref' : 2054167, 'highest_n_ref' : 2104165, 'n_ref_step' : 2, 'lowest_gscn' : 22390, 'highest_gscn' : 22556, 'gscn_step' : 2}
             ];
 
+            // 根據頻段自動選擇子載波間隔
+            var subCarrierSpacing;
+            if (band === 257) {
+                subCarrierSpacing = 120; // FR2使用120 kHz
+            } else {
+                subCarrierSpacing = 30; // FR1使用30 kHz
+            }
 
             if (carrierBw === 273) {
                 numRb = 273;
@@ -491,30 +493,128 @@
                 return result;
             }
 
+            function highFreqCalc(nrBandIndex, coreset0RB, coreset0offset) {
+                // FR2 calculation - using Table 13-8 configuration
+                for (var gscn = nrBand[nrBandIndex]['lowest_gscn']; gscn <= nrBand[nrBandIndex]['highest_gscn']; gscn += nrBand[nrBandIndex]['gscn_step']) {
+                    for (var n_ref = nrBand[nrBandIndex]['lowest_n_ref']; n_ref <= nrBand[nrBandIndex]['highest_n_ref']; n_ref += nrBand[nrBandIndex]['n_ref_step']) {
+                        // FR2 SSB frequency calculation
+                        var absFreqSsb = 24250080 + (gscn - 22256) * 17280;
+                        for (var n_ref_center = nrBand[nrBandIndex].lowest_n_ref; n_ref_center <= nrBand[nrBandIndex].highest_n_ref; n_ref_center += nrBand[nrBandIndex].n_ref_step) {
+                            var nDlCenterFreq = 24250080 + (n_ref_center - 2016667) * 60;
+                            if ( (nDlCenterFreq >= freq_low) && (nDlCenterFreq <= freq_high) ) {
+                                var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * subCarrierSpacing;
+                                var absArfcnPointA = n_ref_center;
+                                
+                                // FR2 Kssb calculation - using corrected formula
+                                var ssbStartFreq = absFreqSsb - 10 * 12 * subCarrierSpacing;
+                                var Kssb = (ssbStartFreq - absFreqPointA) % (subCarrierSpacing * 12) / subCarrierSpacing;
+                                var offsetToPointA = Math.floor((ssbStartFreq - absFreqPointA - Kssb * subCarrierSpacing) / (subCarrierSpacing * 12));
+                                
+                                // Ensure Kssb and offsetToPointA are non-negative integers
+                                Kssb = Math.max(0, Math.round(Kssb));
+                                offsetToPointA = Math.max(0, Math.round(offsetToPointA));
+                                
+                                // FR2 validation condition
+                                var ssbStartFreq = absFreqSsb - 10 * 12 * subCarrierSpacing;
+                                var coresetStartFreq = ssbStartFreq - coreset0offset * 12 * subCarrierSpacing;
+                                
+                                var isValid = (nDlCenterFreq + carrierBw * 12 * subCarrierSpacing / 2 >= coresetStartFreq + coreset0RB * 12 * subCarrierSpacing) &&
+                                             (nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 <= coresetStartFreq);
+                                
+                                if (isValid && Kssb >= 0) {
+                                    result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + n_ref + ", dlEarfcn=" + n_ref_center + ", nDlCenterFreq=" + nDlCenterFreq + ", Kssb=" + Kssb + ", offsetToPointA=" + offsetToPointA + "<br>";
+                                    
+                                    // print du xml for FR2
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlBwpCfg&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mu&gt;KHz120&lt;/mu&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;numRb&gt;" +carrierBw+ "&lt;/numRb&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/dlBwpCfg&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlFreqInfo&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqPointA&gt;" +absFreqPointA+ "&lt;/absFreqPointA&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnPointA&gt;" +absArfcnPointA+ "&lt;/absArfcnPointA&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqSsb&gt;" +absFreqSsb+ "&lt;/absFreqSsb&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnSsb&gt;" +n_ref+ "&lt;/absArfcnSsb&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nrFreqBand&gt;" +band+ "&lt;/nrFreqBand&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierCfg&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;offsetToCarrier&gt;" +offsetToCarrier+ "&lt;/offsetToCarrier&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierSpacing&gt;KHz120&lt;/subCarrierSpacing&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;carrierBw&gt;" +carrierBw+ "&lt;/carrierBw&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/subCarrierCfg&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;bSChannelBwDL&gt;" +bSChannelBwDL+ "&lt;/bSChannelBwDL&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlEarfcn&gt;" +n_ref_center+ "&lt;/dlEarfcn&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/dlFreqInfo&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulBwpCfg&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mu&gt;KHz120&lt;/mu&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;numRb&gt;" +carrierBw+ "&lt;/numRb&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ulBwpCfg&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulFreqInfo&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqPointA&gt;" +absFreqPointA+ "&lt;/absFreqPointA&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnPointA&gt;" +absArfcnPointA+ "&lt;/absArfcnPointA&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nrFreqBand&gt;" +band+ "&lt;/nrFreqBand&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierCfg&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;offsetToCarrier&gt;" +offsetToCarrier+ "&lt;/offsetToCarrier&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierSpacing&gt;KHz120&lt;/subCarrierSpacing&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;carrierBw&gt;" +carrierBw+ "&lt;/carrierBw&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/subCarrierCfg&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;bSChannelBwUl&gt;" +bSChannelBwDL+ "&lt;/bSChannelBwUl&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulEarfcn&gt;" +n_ref_center+ "&lt;/ulEarfcn&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ulFreqInfo&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nDlCenterFreq&gt;" +nDlCenterFreq+ "&lt;/nDlCenterFreq&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nUlCenterFreq&gt;" +nDlCenterFreq+ "&lt;/nUlCenterFreq&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nDlBw&gt;" +nDlBw+ "&lt;/nDlBw&gt;<br>";
+                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nUlBw&gt;" +nUlBw+ "&lt;/nUlBw&gt;<br><br>";
+                                }
+                            }
+                        }
+                    }
+                }
+                return result;
+            }
+
             var resultDiv = document.getElementById("result");
             var result = "";
 			
 			// loop for the table index
-			for(var t=0; t<5; t++)
+			var nrBandIndex = -1;
+			for(var t=0; t<nrBand.length; t++)
 			{
 			    if ( band===nrBand[t]['band'] && (freq_low>=nrBand[t]['lowest_freq']) && (freq_high<=nrBand[t]['highest_freq']) )
 				{
 					// The SS raster entries apply for channel bandwidths larger than or equal to 40 MHz
 					if( band===79 &&  carrierBw>=106 )
 					{
-						var nrBandIndex = 3;
-						break;
+						// Find the appropriate entry for band 79 with gscn_step=16
+						if (nrBand[t]['gscn_step'] === 16) {
+							nrBandIndex = t;
+							break;
+						}
 					}
 					else if( band===79 &&  carrierBw<106 )
 					{
-						var nrBandIndex = 4;
+						// Find the appropriate entry for band 79 with gscn_step=1
+						if (nrBand[t]['gscn_step'] === 1) {
+							nrBandIndex = t;
+							break;
+						}
+					}
+					else if (band === 257) {
+						// For n257, prefer n_ref_step=1 version
+						if (nrBand[t]['n_ref_step'] === 1) {
+							nrBandIndex = t;
+							break;
+						}
+					}
+					else {
+						nrBandIndex = t;
 						break;
 					}
-					var nrBandIndex = t;
 				}
-				// not found index
 			}
-console.log("nrBandIndex=", nrBandIndex);
+			
+			if (nrBandIndex === -1) {
+				resultDiv.innerHTML = "Error: Band not found or frequency range not within band limits";
+				return;
+			}
 			
 			if( band === 79 )  // use 38.213 Table 13-6 index=4
 			{
@@ -522,6 +622,16 @@ console.log("nrBandIndex=", nrBandIndex);
 		           // 38.104 V17.4.0 (2021-12) Table 5.3.5-1: BS channel bandwidths and SCS per operating band in FR1 => n79 SCS30 support BW 10,20,30,40,50,60,70,80,90,100
 					var coreset0RB = 48; 
 					var coreset0offset = 0;
+			}
+			else if (band === 257) {
+				// FR2 CORESET configuration - using Table 13-8
+				if (carrierBw >= 48) {
+					coreset0RB = 48;
+					coreset0offset = 14; // Using Index 2 or 3 from Table 13-8
+				} else {
+					coreset0RB = 24;
+					coreset0offset = 0; // Using Index 0 from Table 13-8
+				}
 			}
 			else
 			{
@@ -541,6 +651,8 @@ console.log("nrBandIndex=", nrBandIndex);
                 result = lowFreqCalc(nrBandIndex, coreset0RB, coreset0offset);
             } else if (nrBand[nrBandIndex]['lowest_freq'] > 3000000 && nrBand[nrBandIndex]['highest_freq'] < 24250000) {
                 result = midFreqCalc(nrBandIndex, coreset0RB, coreset0offset);
+            } else if (nrBand[nrBandIndex]['lowest_freq'] >= 24250000) {
+                result = highFreqCalc(nrBandIndex, coreset0RB, coreset0offset);
             }
 
             resultDiv.innerHTML = result;
@@ -594,21 +706,14 @@ console.log("nrBandIndex=", nrBandIndex);
       </ul>
     </li>
 
-	<!--  
-			38.104 n48 with SCS=15,30 kHz (common: kHz30)
-			38.104 n78 with SCS=15,30 kHz (common: kHz30)
-			38.104 n79 with SCS=15,30 kHz (common: kHz30)
-			38.104 n257 with SCS=60,120 kHz (common: kHz120)
-			38.104 n257 SS Block SCS=120,240 kHz (common: kHz120)
-	-->
     <li>
       <strong>Spec 38.101-1 </strong>
       <ul>
-        <li>n41 => freq range=[2496000, 2690000] kHz, arfcn range=[499200, 537996] step=6</li>
-        <li>n48 => freq range=[3550000, 3700000] kHz, arfcn range=[636668, 646666] step=2</li>
-        <li>n78 => freq range=[3300000, 3800000] kHz, arfcn range=[620000, 653332] step=2</li>
-        <li>n79 => freq range=[4400000, 5000000] kHz, arfcn range=[693334, 733332] step=2<span style="color: blue;">→ (RadiSys code):For n79, CORESET0 use 38.213 Table 13-6 Index 4</span></li>
-        <li>n257 => freq range=[26500000, 29500000] kHz, arfcn range=[2054167,2104165] step=2</li>
+        <li>n41 => freq range [2496000, 2690000]</li>
+        <li>n48 => freq range [3550000, 3700000]</li>
+        <li>n78 => freq range [3300000, 3800000]</li>
+        <li>n79 => freq range [4400000, 5000000] <span style="color: blue;">→ (RadiSys code):For n79, CORESET0 use 38.213 Table 13-6 Index 4</span></li>
+        <li>n257 => freq range [26500000, 29500000] <span style="color: blue;">→ (FR2): Using 38.213 Table 13-8 configuration</span></li>
       <ul>
         <li><span style="color: blue;">(RadiSys code): if BW>=48, CORESET0 use Table 13-4 Index 10. // Try to have 48 RB size for CS-0 to avoid allocation failure for SIB1 during SSB(20RBs) overlap</span></li>
         <li>(RadiSys code): if BW<48, CORESET0 use Table Index 0. // if 48 RB is not available, get the best fit CS0</li>
@@ -684,6 +789,32 @@ console.log("nrBandIndex=", nrBandIndex);
         <tr>
           <td>10</td>
           <td>24</td>
+        </tr>
+      </table>
+    </div>
+
+  <div class="inline-table">
+    <p><b>38.101-1 Table 5.3.2-1 SCS=120 (FR2)</b></p>
+    <table>
+        <tr>
+          <th>BW(MHz)</th>
+          <th>carrierBw(RB)</th>
+        </tr>
+        <tr>
+          <td>400</td>
+          <td>264</td>
+        </tr>
+        <tr>
+          <td>200</td>
+          <td>132</td>
+        </tr>
+        <tr>
+          <td>100</td>
+          <td>66</td>
+        </tr>
+        <tr>
+          <td>50</td>
+          <td>32</td>
         </tr>
       </table>
     </div>
@@ -841,6 +972,61 @@ console.log("nrBandIndex=", nrBandIndex);
   </div>
 
   <div class="inline-table">
+    <p><b>38.213 Table 13-8: {120,120} (FR2)</b></p>
+    <table>
+        <tr>
+          <th>Index</th>
+          <th>coreset0numRBs</th>
+          <th>coreset0OffsetRB</th>
+        </tr>
+        <tr>
+          <td>0</td>
+          <td>24</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>24</td>
+          <td>4</td>
+        </tr>
+        <tr>
+          <td style="color: blue;">2</td>
+          <td style="color: blue;">48</td>
+          <td style="color: blue;">14</td>
+        </tr>
+        <tr>
+          <td style="color: blue;">3</td>
+          <td style="color: blue;">48</td>
+          <td style="color: blue;">14</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>24</td>
+          <td>-20/-21</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>24</td>
+          <td>24</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>48</td>
+          <td>-20/-21</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>48</td>
+          <td>48</td>
+        </tr>
+        <tr>
+          <td>8-15</td>
+          <td colspan="2">Reserved</td>
+        </tr>
+    </table>
+  </div>
+
+  <div class="inline-table">
     <img src="https://raw.githubusercontent.com/dustinchen26/gscn_calculator/master/ssb_final.png" alt="GitHub Image" width="500">
   </div>
 </div>
@@ -848,7 +1034,7 @@ console.log("nrBandIndex=", nrBandIndex);
     <li>
       <strong>Please input (band, carrierBw(RB), freq_low, freq_high), then it will calculate gscn, PointA, Ssb, CenterFreq, Kssb, offsetToPointA</strong>
       <ul>
-        <li>ex:(band, carrierBw(RB), freq_low, freq_high)=(78, 273, 3603840, 3603840) / (79, 273, 4849860, 4849860) / (41, 273, 2565750, 2565750)</li>
+        <li>ex:(band, carrierBw(RB), freq_low, freq_high)=(78, 273, 3603840, 3603840) / (79, 273, 4849860, 4849860) / (41, 273, 2565750, 2565750) / (257, 32, 27533280, 27533280)</li>
     <label for="band">band:</label>
     <input type="number" id="band" value="78" name="band" min="0" max="100000000"><br>
 	
