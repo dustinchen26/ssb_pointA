@@ -9,7 +9,6 @@
          https://www.onlinegdb.com/online_python_compiler
          https://www.onlinegdb.com/online_c_compiler
 -->
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,9 +26,6 @@
       text-align: center;
 	  line-height: 0.1; /*  將行高設置為原來的0.1倍 */
     }
-
-
-
     td, th {
       height: 1px;
       white-space: nowrap;
@@ -58,21 +54,17 @@
         #result {
 			font-size: 13.5px; /* 调整为你想要的字体大小，单位可以是px、em、rem等 */
         }
-
 /* Style to display tables inline */
 .table-container {
   display: flex;
   justify-content: flex-start;
 }
-
 .inline-table {
   margin-right: 10px; /* Adjust the margin as needed for minimum spacing */
 }
-
 .inline-table:last-child {
   margin-right: 0; /* Remove margin from the last table */
 }
-
     /* 好看一點的表格樣式，可選用 */
     table {
       border-collapse: collapse;
@@ -81,16 +73,13 @@
     table {
       table-layout: fixed;
     }
-
     ul {
         margin-top: 0; /* 去除上边距 */
     }
-
 		/* 超連結藍色 */
         .blue-link {
             color: blue;
         }
-
     </style>	
 </head>
 <body>
@@ -99,7 +88,6 @@
         function calculateFreqToARFCN() {
             var freq = parseFloat(document.getElementById("freq1").value);
             var result1 = document.getElementById("result1");
-
             if (!isNaN(freq)) {
                 if (freq <= 3000000) {
                     arfcn_calculated = (freq - 0) / 5 + 0;
@@ -109,17 +97,14 @@
                     // FR2 calculation
                     arfcn_calculated = (freq - 24250080) / 60 + 2016667;
                 }
-
                 result1.innerHTML = "arfcn = " + arfcn_calculated.toFixed(0);
             } else {
                 result1.innerHTML = "Invalid input. Please enter a valid value.";
             }
         }
-
         function calculateARFCNToFreq() {
             var arfcn = parseInt(document.getElementById("arfcn").value);
             var result2 = document.getElementById("result2");
-
             if (!isNaN(arfcn)) {
                 if (arfcn <= 599999) {
                     freq_calculated = 0 + 5 * (arfcn - 0);
@@ -129,7 +114,6 @@
                     // FR2 calculation
                     freq_calculated = 24250080 + 60 * (arfcn - 2016667);
                 }
-
                 result2.innerHTML = "Freq = " + freq_calculated.toFixed(0) + " Hz";
             } else {
                 result2.innerHTML = "Invalid input. Please enter a valid value.";
@@ -149,20 +133,15 @@
 			
             var nrBand = [
                 {'band' : 41, 'lowest_freq' : 2496000, 'highest_freq' : 2690000, 'lowest_n_ref' : 499200, 'highest_n_ref' : 537996, 'n_ref_step' : 6, 'lowest_gscn' : 6252, 'highest_gscn' : 6714, 'gscn_step' : 3},
-
                 {'band' : 48, 'lowest_freq' : 3550000, 'highest_freq' : 3700000, 'lowest_n_ref' : 636667, 'highest_n_ref' : 646666, 'n_ref_step' : 1, 'lowest_gscn' : 7884, 'highest_gscn' : 7982, 'gscn_step' : 1},
                 {'band' : 48, 'lowest_freq' : 3550000, 'highest_freq' : 3700000, 'lowest_n_ref' : 636668, 'highest_n_ref' : 646666, 'n_ref_step' : 2, 'lowest_gscn' : 7884, 'highest_gscn' : 7982, 'gscn_step' : 1},
-
                 {'band' : 78, 'lowest_freq' : 3300000, 'highest_freq' : 3800000, 'lowest_n_ref' : 620000, 'highest_n_ref' : 653333, 'n_ref_step' : 1, 'lowest_gscn' : 7711, 'highest_gscn' : 8051, 'gscn_step' : 1},
                 {'band' : 78, 'lowest_freq' : 3300000, 'highest_freq' : 3800000, 'lowest_n_ref' : 620000, 'highest_n_ref' : 653332, 'n_ref_step' : 2, 'lowest_gscn' : 7711, 'highest_gscn' : 8051, 'gscn_step' : 1},
-
                 {'band' : 79, 'lowest_freq' : 4400000, 'highest_freq' : 5000000, 'lowest_n_ref' : 693334, 'highest_n_ref' : 733333, 'n_ref_step' : 1, 'lowest_gscn' : 8480, 'highest_gscn' : 8880, 'gscn_step' : 16},
                 {'band' : 79, 'lowest_freq' : 4400000, 'highest_freq' : 5000000, 'lowest_n_ref' : 693334, 'highest_n_ref' : 733332, 'n_ref_step' : 2, 'lowest_gscn' : 8480, 'highest_gscn' : 8880, 'gscn_step' : 16},
-
                 {'band' : 257, 'lowest_freq' : 26500000, 'highest_freq' : 29500000, 'lowest_n_ref' : 2054166, 'highest_n_ref' : 2104165, 'n_ref_step' : 1, 'lowest_gscn' : 22388, 'highest_gscn' : 22558, 'gscn_step' : 1},
                 {'band' : 257, 'lowest_freq' : 26500000, 'highest_freq' : 29500000, 'lowest_n_ref' : 2054167, 'highest_n_ref' : 2104165, 'n_ref_step' : 2, 'lowest_gscn' : 22390, 'highest_gscn' : 22556, 'gscn_step' : 2}
             ];
-
             // 根據頻段自動選擇子載波間隔
             var subCarrierSpacing;
             if (band === 257) {
@@ -170,7 +149,6 @@
             } else {
                 subCarrierSpacing = 30; // FR1使用30 kHz
             }
-
             if (carrierBw === 273) {
                 numRb = 273;
                 bSChannelBwDL = "100MHZ";
@@ -249,7 +227,6 @@
                 nUlBw = 10;
                 resultFound = true;
             }
-
             function lowFreqCalc(nrBandIndex, coreset0RB, coreset0offset) {
                 //#5*n_ref=N*1200+M*50, N=1:2499, M:1,3,5, AND { gscn=3N+(M-3)/2 ==> N=(gscn+1)/3, if M=5 ; N=gscn/3, if M=3 ; N=(gscn-1)/3, if M=1 }
                 switch(nrBand[nrBandIndex]['gscn_step']) {
@@ -278,47 +255,7 @@
 															continue;
 														else
 															result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + n_ref + ", dlEarfcn=" + dlEarfcn + ", nDlCenterFreq=" + nDlCenterFreq + ", Kssb=" + Kssb + ", offsetToPointA=" + offsetToPointA + "<br>";
-													
-												// print du xml
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlBwpCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mu&gt;KHz30&lt;/mu&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;numRb&gt;" +carrierBw+ "&lt;/numRb&gt;<br>";												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/dlBwpCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlFreqInfo&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqPointA&gt;" +absFreqPointA+ "&lt;/absFreqPointA&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnPointA&gt;" +absArfcnPointA+ "&lt;/absArfcnPointA&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqSsb&gt;" +absFreqSsb+ "&lt;/absFreqSsb&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnSsb&gt;" +n_ref+ "&lt;/absArfcnSsb&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nrFreqBand&gt;" +band+ "&lt;/nrFreqBand&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;offsetToCarrier&gt;" +offsetToCarrier+ "&lt;/offsetToCarrier&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierSpacing&gt;KHz30&lt;/subCarrierSpacing&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;carrierBw&gt;" +carrierBw+ "&lt;/carrierBw&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/subCarrierCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;bSChannelBwDL&gt;" +bSChannelBwDL+ "&lt;/bSChannelBwDL&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlEarfcn&gt;" +dlEarfcn+ "&lt;/dlEarfcn&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/dlFreqInfo&gt;				&nbsp;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulBwpCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mu&gt;KHz30&lt;/mu&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;numRb&gt;" +carrierBw+ "&lt;/numRb&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ulBwpCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulFreqInfo&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqPointA&gt;" +absFreqPointA+ "&lt;/absFreqPointA&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnPointA&gt;" +absArfcnPointA+ "&lt;/absArfcnPointA&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nrFreqBand&gt;" +band+ "&lt;/nrFreqBand&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;offsetToCarrier&gt;" +offsetToCarrier+ "&lt;/offsetToCarrier&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierSpacing&gt;KHz30&lt;/subCarrierSpacing&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;carrierBw&gt;" +carrierBw+ "&lt;/carrierBw&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/subCarrierCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;bSChannelBwUl&gt;" +bSChannelBwDL+ "&lt;/bSChannelBwUl&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulEarfcn&gt;" +dlEarfcn+ "&lt;/ulEarfcn&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ulFreqInfo&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nDlCenterFreq&gt;" +nDlCenterFreq+ "&lt;/nDlCenterFreq&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nUlCenterFreq&gt;" +nDlCenterFreq+ "&lt;/nUlCenterFreq&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nDlBw&gt;" +nDlBw+ "&lt;/nDlBw&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nUlBw&gt;" +nUlBw+ "&lt;/nUlBw&gt;<br><br>";
-
-													
+																										
 													}
 												}
 											}
@@ -328,7 +265,6 @@
                             }
                         }
                         break;
-
                     case 3:
                         var uu = nrBand[nrBandIndex]['lowest_gscn'] % 3;
                         var M;
@@ -339,7 +275,6 @@
                         } else if (uu === 2) {
                             M = 1;
                         }
-
                         for (var N = 1; N <= 2499; N++) {
                             var gscn = 3 * N + (M - 3) / 2;
                             if (gscn >= nrBand[nrBandIndex]['lowest_gscn'] && gscn <= nrBand[nrBandIndex]['highest_gscn']) {
@@ -364,45 +299,6 @@
 													else
 														result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + n_ref + ", dlEarfcn=" + dlEarfcn + ", nDlCenterFreq=" + nDlCenterFreq + ", Kssb=" + Kssb + ", offsetToPointA=" + offsetToPointA + "<br>";
 												
-												// print du xml
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlBwpCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mu&gt;KHz30&lt;/mu&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;numRb&gt;" +carrierBw+ "&lt;/numRb&gt;<br>";												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/dlBwpCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlFreqInfo&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqPointA&gt;" +absFreqPointA+ "&lt;/absFreqPointA&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnPointA&gt;" +absArfcnPointA+ "&lt;/absArfcnPointA&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqSsb&gt;" +absFreqSsb+ "&lt;/absFreqSsb&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnSsb&gt;" +n_ref+ "&lt;/absArfcnSsb&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nrFreqBand&gt;" +band+ "&lt;/nrFreqBand&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;offsetToCarrier&gt;" +offsetToCarrier+ "&lt;/offsetToCarrier&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierSpacing&gt;KHz30&lt;/subCarrierSpacing&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;carrierBw&gt;" +carrierBw+ "&lt;/carrierBw&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/subCarrierCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;bSChannelBwDL&gt;" +bSChannelBwDL+ "&lt;/bSChannelBwDL&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlEarfcn&gt;" +dlEarfcn+ "&lt;/dlEarfcn&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/dlFreqInfo&gt;				&nbsp;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulBwpCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mu&gt;KHz30&lt;/mu&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;numRb&gt;" +carrierBw+ "&lt;/numRb&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ulBwpCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulFreqInfo&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqPointA&gt;" +absFreqPointA+ "&lt;/absFreqPointA&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnPointA&gt;" +absArfcnPointA+ "&lt;/absArfcnPointA&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nrFreqBand&gt;" +band+ "&lt;/nrFreqBand&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;offsetToCarrier&gt;" +offsetToCarrier+ "&lt;/offsetToCarrier&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierSpacing&gt;KHz30&lt;/subCarrierSpacing&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;carrierBw&gt;" +carrierBw+ "&lt;/carrierBw&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/subCarrierCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;bSChannelBwUl&gt;" +bSChannelBwDL+ "&lt;/bSChannelBwUl&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulEarfcn&gt;" +dlEarfcn+ "&lt;/ulEarfcn&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ulFreqInfo&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nDlCenterFreq&gt;" +nDlCenterFreq+ "&lt;/nDlCenterFreq&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nUlCenterFreq&gt;" +nDlCenterFreq+ "&lt;/nUlCenterFreq&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nDlBw&gt;" +nDlBw+ "&lt;/nDlBw&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nUlBw&gt;" +nUlBw+ "&lt;/nUlBw&gt;<br><br>";
-
 												
 												}
 											}
@@ -413,10 +309,8 @@
                         }
                         break;
                 }
-
                 return result;
             }
-
             function midFreqCalc(nrBandIndex, coreset0RB, coreset0offset) {
                 // 3,000,000+15*(n_ref-600,000)=3,000,000+N*1440 ==> (n_ref-600,000)=(gscn-7499)*96 to find all (n_ref,gscn) in the proper freq range
                 for (var gscn = nrBand[nrBandIndex]['lowest_gscn']; gscn <= nrBand[nrBandIndex]['highest_gscn']; gscn += nrBand[nrBandIndex]['gscn_step']) {
@@ -442,44 +336,6 @@
 											{
 												result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + n_ref + ", dlEarfcn=" + dlEarfcn + ", nDlCenterFreq=" + nDlCenterFreq + ", Kssb=" + Kssb + ", offsetToPointA=" + offsetToPointA + "<br>";
 										
-												// print du xml
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlBwpCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mu&gt;KHz30&lt;/mu&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;numRb&gt;" +carrierBw+ "&lt;/numRb&gt;<br>";												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/dlBwpCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlFreqInfo&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqPointA&gt;" +absFreqPointA+ "&lt;/absFreqPointA&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnPointA&gt;" +absArfcnPointA+ "&lt;/absArfcnPointA&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqSsb&gt;" +absFreqSsb+ "&lt;/absFreqSsb&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnSsb&gt;" +n_ref+ "&lt;/absArfcnSsb&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nrFreqBand&gt;" +band+ "&lt;/nrFreqBand&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;offsetToCarrier&gt;" +offsetToCarrier+ "&lt;/offsetToCarrier&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierSpacing&gt;KHz30&lt;/subCarrierSpacing&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;carrierBw&gt;" +carrierBw+ "&lt;/carrierBw&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/subCarrierCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;bSChannelBwDL&gt;" +bSChannelBwDL+ "&lt;/bSChannelBwDL&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlEarfcn&gt;" +dlEarfcn+ "&lt;/dlEarfcn&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/dlFreqInfo&gt;				&nbsp;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulBwpCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mu&gt;KHz30&lt;/mu&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;numRb&gt;" +carrierBw+ "&lt;/numRb&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ulBwpCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulFreqInfo&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqPointA&gt;" +absFreqPointA+ "&lt;/absFreqPointA&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnPointA&gt;" +absArfcnPointA+ "&lt;/absArfcnPointA&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nrFreqBand&gt;" +band+ "&lt;/nrFreqBand&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;offsetToCarrier&gt;" +offsetToCarrier+ "&lt;/offsetToCarrier&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierSpacing&gt;KHz30&lt;/subCarrierSpacing&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;carrierBw&gt;" +carrierBw+ "&lt;/carrierBw&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/subCarrierCfg&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;bSChannelBwUl&gt;" +bSChannelBwDL+ "&lt;/bSChannelBwUl&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulEarfcn&gt;" +dlEarfcn+ "&lt;/ulEarfcn&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ulFreqInfo&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nDlCenterFreq&gt;" +nDlCenterFreq+ "&lt;/nDlCenterFreq&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nUlCenterFreq&gt;" +nDlCenterFreq+ "&lt;/nUlCenterFreq&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nDlBw&gt;" +nDlBw+ "&lt;/nDlBw&gt;<br>";
-												result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nUlBw&gt;" +nUlBw+ "&lt;/nUlBw&gt;<br><br>";
 												
 												}
 										
@@ -489,88 +345,56 @@
                         }
                     }
                 }
-
                 return result;
             }
-
-            function highFreqCalc(nrBandIndex, coreset0RB, coreset0offset) {
-                // FR2 calculation - using Table 13-8 configuration
-                for (var gscn = nrBand[nrBandIndex]['lowest_gscn']; gscn <= nrBand[nrBandIndex]['highest_gscn']; gscn += nrBand[nrBandIndex]['gscn_step']) {
-                    for (var n_ref = nrBand[nrBandIndex]['lowest_n_ref']; n_ref <= nrBand[nrBandIndex]['highest_n_ref']; n_ref += nrBand[nrBandIndex]['n_ref_step']) {
-                        // FR2 SSB frequency calculation
-                        var absFreqSsb = 24250080 + (gscn - 22256) * 17280;
-                        for (var n_ref_center = nrBand[nrBandIndex].lowest_n_ref; n_ref_center <= nrBand[nrBandIndex].highest_n_ref; n_ref_center += nrBand[nrBandIndex].n_ref_step) {
-                            var nDlCenterFreq = 24250080 + (n_ref_center - 2016667) * 60;
-                            if ( (nDlCenterFreq >= freq_low) && (nDlCenterFreq <= freq_high) ) {
-                                var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * subCarrierSpacing;
-                                var absArfcnPointA = n_ref_center;
-                                
-                                // FR2 Kssb calculation - using corrected formula
-                                var ssbStartFreq = absFreqSsb - 10 * 12 * subCarrierSpacing;
-                                var Kssb = (ssbStartFreq - absFreqPointA) % (subCarrierSpacing * 12) / subCarrierSpacing;
-                                var offsetToPointA = Math.floor((ssbStartFreq - absFreqPointA - Kssb * subCarrierSpacing) / (subCarrierSpacing * 12));
-                                
-                                // Ensure Kssb and offsetToPointA are non-negative integers
-                                Kssb = Math.max(0, Math.round(Kssb));
-                                offsetToPointA = Math.max(0, Math.round(offsetToPointA));
-                                
-                                // FR2 validation condition
-                                var ssbStartFreq = absFreqSsb - 10 * 12 * subCarrierSpacing;
-                                var coresetStartFreq = ssbStartFreq - coreset0offset * 12 * subCarrierSpacing;
-                                
-                                var isValid = (nDlCenterFreq + carrierBw * 12 * subCarrierSpacing / 2 >= coresetStartFreq + coreset0RB * 12 * subCarrierSpacing) &&
-                                             (nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 <= coresetStartFreq);
-                                
-                                if (isValid && Kssb >= 0) {
-                                    result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + n_ref + ", dlEarfcn=" + n_ref_center + ", nDlCenterFreq=" + nDlCenterFreq + ", Kssb=" + Kssb + ", offsetToPointA=" + offsetToPointA + "<br>";
-                                    
-                                    // print du xml for FR2
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlBwpCfg&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mu&gt;KHz120&lt;/mu&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;numRb&gt;" +carrierBw+ "&lt;/numRb&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/dlBwpCfg&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlFreqInfo&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqPointA&gt;" +absFreqPointA+ "&lt;/absFreqPointA&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnPointA&gt;" +absArfcnPointA+ "&lt;/absArfcnPointA&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqSsb&gt;" +absFreqSsb+ "&lt;/absFreqSsb&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnSsb&gt;" +n_ref+ "&lt;/absArfcnSsb&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nrFreqBand&gt;" +band+ "&lt;/nrFreqBand&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierCfg&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;offsetToCarrier&gt;" +offsetToCarrier+ "&lt;/offsetToCarrier&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierSpacing&gt;KHz120&lt;/subCarrierSpacing&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;carrierBw&gt;" +carrierBw+ "&lt;/carrierBw&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/subCarrierCfg&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;bSChannelBwDL&gt;" +bSChannelBwDL+ "&lt;/bSChannelBwDL&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dlEarfcn&gt;" +n_ref_center+ "&lt;/dlEarfcn&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/dlFreqInfo&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulBwpCfg&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mu&gt;KHz120&lt;/mu&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;numRb&gt;" +carrierBw+ "&lt;/numRb&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ulBwpCfg&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulFreqInfo&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absFreqPointA&gt;" +absFreqPointA+ "&lt;/absFreqPointA&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;absArfcnPointA&gt;" +absArfcnPointA+ "&lt;/absArfcnPointA&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nrFreqBand&gt;" +band+ "&lt;/nrFreqBand&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierCfg&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;offsetToCarrier&gt;" +offsetToCarrier+ "&lt;/offsetToCarrier&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;subCarrierSpacing&gt;KHz120&lt;/subCarrierSpacing&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;carrierBw&gt;" +carrierBw+ "&lt;/carrierBw&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/subCarrierCfg&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;bSChannelBwUl&gt;" +bSChannelBwDL+ "&lt;/bSChannelBwUl&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ulEarfcn&gt;" +n_ref_center+ "&lt;/ulEarfcn&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ulFreqInfo&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nDlCenterFreq&gt;" +nDlCenterFreq+ "&lt;/nDlCenterFreq&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nUlCenterFreq&gt;" +nDlCenterFreq+ "&lt;/nUlCenterFreq&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nDlBw&gt;" +nDlBw+ "&lt;/nDlBw&gt;<br>";
-                                    result += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nUlBw&gt;" +nUlBw+ "&lt;/nUlBw&gt;<br><br>";
-                                }
-                            }
-                        }
-                    }
-                }
-                return result;
-            }
-
+function highFreqCalc(nrBandIndex, coreset0RB, coreset0offset) {
+    // FR2 calculation - 優化版本
+    var result = "";
+    
+    // 直接針對目標頻率進行計算，而不是遍歷所有可能值
+    var targetFreq = freq_low; // 使用輸入的頻率
+    
+    // 計算對應的 GSCN
+    var gscn = Math.round(22256 + (targetFreq - 24250080) / 17280);
+    
+    // 計算對應的 n_ref
+    var n_ref = Math.round(2016667 + (targetFreq - 24250080) / 60);
+    
+    // 驗證 GSCN 和 n_ref 是否在有效範圍內
+    if (gscn >= nrBand[nrBandIndex]['lowest_gscn'] && gscn <= nrBand[nrBandIndex]['highest_gscn'] &&
+        n_ref >= nrBand[nrBandIndex]['lowest_n_ref'] && n_ref <= nrBand[nrBandIndex]['highest_n_ref']) {
+        
+        var absFreqSsb = 24250080 + (gscn - 22256) * 17280;
+        var nDlCenterFreq = targetFreq;
+        var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * subCarrierSpacing;
+        var absArfcnPointA = n_ref;
+        
+        // FR2 Kssb 計算
+        var ssbStartFreq = absFreqSsb - 10 * 12 * subCarrierSpacing;
+        var Kssb = (ssbStartFreq - absFreqPointA) % (subCarrierSpacing * 12) / subCarrierSpacing;
+        var offsetToPointA = Math.floor((ssbStartFreq - absFreqPointA - Kssb * subCarrierSpacing) / (subCarrierSpacing * 12));
+        
+        Kssb = Math.max(0, Math.round(Kssb));
+        offsetToPointA = Math.max(0, Math.round(offsetToPointA));
+        
+        // 驗證條件
+        var ssbStartFreq = absFreqSsb - 10 * 12 * subCarrierSpacing;
+        var coresetStartFreq = ssbStartFreq - coreset0offset * 12 * subCarrierSpacing;
+        
+        var isValid = (nDlCenterFreq + carrierBw * 12 * subCarrierSpacing / 2 >= coresetStartFreq + coreset0RB * 12 * subCarrierSpacing) &&
+                     (nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 <= coresetStartFreq);
+        
+        if (isValid && Kssb >= 0) {
+            result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + 
+                     ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + n_ref + ", dlEarfcn=" + n_ref + 
+                     ", nDlCenterFreq=" + nDlCenterFreq + ", Kssb=" + Kssb + ", offsetToPointA=" + offsetToPointA + "<br>";
+            
+            // 這裡可以添加您的 XML 輸出代碼
+        }
+    }
+    
+    return result;
+}
             var resultDiv = document.getElementById("result");
             var result = "";
 			
@@ -654,11 +478,9 @@
             } else if (nrBand[nrBandIndex]['lowest_freq'] >= 24250000) {
                 result = highFreqCalc(nrBandIndex, coreset0RB, coreset0offset);
             }
-
             resultDiv.innerHTML = result;
         }
     </script>
-
     <h1>gscn_calculator</h1>
 	<style>
 		.author-info {
@@ -670,7 +492,6 @@
 	<p class="author-info">Author: Dustin_Chen</p>
 	<p class="author-info">Email: <a href="mailto:Dustin_Chen@compal.com">Dustin_Chen@compal.com</a></p>
 	<p class="author-info">or <a href="mailto:chuhpsdustin@gmail.com">chuhpsdustin@gmail.com</a></p>
-
   <ul>
     <li>
       <strong>freq to arfcn</strong>
@@ -694,7 +515,6 @@
 		</li>	
 	  </ul>
     </li>
-
     <li>
       <strong>draw</strong>
       <ul>
@@ -705,7 +525,6 @@
         </li>
       </ul>
     </li>
-
     <li>
       <strong>Spec 38.101-1 </strong>
       <ul>
@@ -736,7 +555,6 @@
 	10M=24RB, 
 	5M=11RB</p> 
 	-->
-
 <br>
 <div class="table-container">
   <div class="inline-table">
@@ -792,7 +610,6 @@
         </tr>
       </table>
     </div>
-
   <div class="inline-table">
     <p><b>38.101-1 Table 5.3.2-1 SCS=120 (FR2)</b></p>
     <table>
@@ -818,7 +635,6 @@
         </tr>
       </table>
     </div>
-
   <div class="inline-table">
     <p><b>38.213 Table 13-4: {30,30} miniBW 5 or 10 MHz</b></p>
     <table>
@@ -909,7 +725,6 @@
         </tr>
       </table>
     </div>
-
   <div class="inline-table">
     <p><b>38.213 Table 13-6: {30,30} miniBW 40 MHz</b></p>
     <table>
@@ -970,7 +785,6 @@
         </tr>
     </table>
   </div>
-
   <div class="inline-table">
     <p><b>38.213 Table 13-8: {120,120} (FR2)</b></p>
     <table>
@@ -1025,12 +839,10 @@
         </tr>
     </table>
   </div>
-
   <div class="inline-table">
     <img src="https://raw.githubusercontent.com/dustinchen26/gscn_calculator/master/ssb_final.png" alt="GitHub Image" width="500">
   </div>
 </div>
-
     <li>
       <strong>Please input (band, carrierBw(RB), freq_low, freq_high), then it will calculate gscn, PointA, Ssb, CenterFreq, Kssb, offsetToPointA</strong>
       <ul>
@@ -1047,12 +859,10 @@
 	
 	<label for="freq_high">freq_high(kHz):</label>
     <input type="number" id="freq_high" value="3603840" name="freq_high" min="0" max="100000000"><br>
-
     <button onclick="calculate()">Calculate</button>
     <br>
     <div id="result"></div>
 	  </ul>
     </li>
-
 </body>
 </html>
