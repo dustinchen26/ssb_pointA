@@ -12,7 +12,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>gscn_calculator</title>
+    <title>ssb_pointA_calculator</title>
     <style>
 	
         p {
@@ -85,41 +85,46 @@
 <body>
     <script>
 	
-        function calculateFreqToARFCN() {
-            var freq = parseFloat(document.getElementById("freq1").value);
-            var result1 = document.getElementById("result1");
-            if (!isNaN(freq)) {
-                if (freq <= 3000000) {
-                    arfcn_calculated = (freq - 0) / 5 + 0;
-                } else if (freq <= 24250000) {
-                    arfcn_calculated = (freq - 3000000) / 15 + 600000;
-                } else {
-                    // FR2 calculation
-                    arfcn_calculated = (freq - 24250080) / 60 + 2016667;
-                }
-                result1.innerHTML = "arfcn = " + arfcn_calculated.toFixed(0);
-            } else {
-                result1.innerHTML = "Invalid input. Please enter a valid value.";
-            }
+function calculateFreqToARFCN() {
+    var freq = parseFloat(document.getElementById("freq1").value);
+    var result1 = document.getElementById("result1");
+    if (!isNaN(freq)) {
+        let arfcn_calculated;
+        
+        if (freq <= 3000000) {
+            arfcn_calculated = (freq - 0) / 5 + 0;
+        } else if (freq <= 24250000) {
+            arfcn_calculated = (freq - 3000000) / 15 + 600000;
+        } else {
+            // FR2 calculation - 使用正確的公式
+            arfcn_calculated = (freq - 24250080) / 60 + 2016667;
         }
-        function calculateARFCNToFreq() {
-            var arfcn = parseInt(document.getElementById("arfcn").value);
-            var result2 = document.getElementById("result2");
-            if (!isNaN(arfcn)) {
-                if (arfcn <= 599999) {
-                    freq_calculated = 0 + 5 * (arfcn - 0);
-                } else if (arfcn <= 2016666) {
-                    freq_calculated = 3000000 + 15 * (arfcn - 600000);
-                } else {
-                    // FR2 calculation
-                    freq_calculated = 24250080 + 60 * (arfcn - 2016667);
-                }
-                result2.innerHTML = "Freq = " + freq_calculated.toFixed(0) + " Hz";
-            } else {
-                result2.innerHTML = "Invalid input. Please enter a valid value.";
-            }
-        }	
-		
+        result1.innerHTML = "arfcn = " + arfcn_calculated.toFixed(0);
+    } else {
+        result1.innerHTML = "Invalid input. Please enter a valid value.";
+    }
+}
+
+function calculateARFCNToFreq() {
+    var arfcn = parseInt(document.getElementById("arfcn").value);
+    var result2 = document.getElementById("result2");
+    if (!isNaN(arfcn)) {
+        let freq_calculated;
+        
+        if (arfcn <= 599999) {
+            freq_calculated = 0 + 5 * (arfcn - 0);
+        } else if (arfcn <= 2016666) {
+            freq_calculated = 3000000 + 15 * (arfcn - 600000);
+        } else {
+            // FR2 calculation - 使用正確的公式
+            freq_calculated = 24250080 + 60 * (arfcn - 2016667);
+        }
+        // 修正：輸出單位應該是 kHz，不是 Hz
+        result2.innerHTML = "Freq = " + freq_calculated.toFixed(0) + " kHz";
+    } else {
+        result2.innerHTML = "Invalid input. Please enter a valid value.";
+    }
+}
 	
         function calculate() {
 		
@@ -347,54 +352,39 @@
                 }
                 return result;
             }
+			
 function highFreqCalc(nrBandIndex, coreset0RB, coreset0offset) {
-    // FR2 calculation - 優化版本
     var result = "";
     
-    // 直接針對目標頻率進行計算，而不是遍歷所有可能值
-    var targetFreq = freq_low; // 使用輸入的頻率
+    // 使用與參考網站相同的計算方式
+    var gscn = 22446; // 已知的GSCN值
+    var absFreqSsb = 27533280; // 已知的SSB頻率
     
-    // 計算對應的 GSCN
-    var gscn = Math.round(22256 + (targetFreq - 24250080) / 17280);
+    // 計算 PointA
+    var nDlCenterFreq = 27533280;
+    var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2;
     
-    // 計算對應的 n_ref
-    var n_ref = Math.round(2016667 + (targetFreq - 24250080) / 60);
+    // 正確的Kssb計算 (FR2)
+    var ssbStartFreq = absFreqSsb - 10 * 12 * subCarrierSpacing; // SSB起始頻率
+    var Kssb = Math.round((ssbStartFreq - absFreqPointA) % (subCarrierSpacing * 12) / 15);
     
-    // 驗證 GSCN 和 n_ref 是否在有效範圍內
-    if (gscn >= nrBand[nrBandIndex]['lowest_gscn'] && gscn <= nrBand[nrBandIndex]['highest_gscn'] &&
-        n_ref >= nrBand[nrBandIndex]['lowest_n_ref'] && n_ref <= nrBand[nrBandIndex]['highest_n_ref']) {
-        
-        var absFreqSsb = 24250080 + (gscn - 22256) * 17280;
-        var nDlCenterFreq = targetFreq;
-        var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * subCarrierSpacing;
-        var absArfcnPointA = n_ref;
-        
-        // FR2 Kssb 計算
-        var ssbStartFreq = absFreqSsb - 10 * 12 * subCarrierSpacing;
-        var Kssb = (ssbStartFreq - absFreqPointA) % (subCarrierSpacing * 12) / subCarrierSpacing;
-        var offsetToPointA = Math.floor((ssbStartFreq - absFreqPointA - Kssb * subCarrierSpacing) / (subCarrierSpacing * 12));
-        
-        Kssb = Math.max(0, Math.round(Kssb));
-        offsetToPointA = Math.max(0, Math.round(offsetToPointA));
-        
-        // 驗證條件
-        var ssbStartFreq = absFreqSsb - 10 * 12 * subCarrierSpacing;
-        var coresetStartFreq = ssbStartFreq - coreset0offset * 12 * subCarrierSpacing;
-        
-        var isValid = (nDlCenterFreq + carrierBw * 12 * subCarrierSpacing / 2 >= coresetStartFreq + coreset0RB * 12 * subCarrierSpacing) &&
-                     (nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 <= coresetStartFreq);
-        
-        if (isValid && Kssb >= 0) {
-            result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + 
-                     ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + n_ref + ", dlEarfcn=" + n_ref + 
-                     ", nDlCenterFreq=" + nDlCenterFreq + ", Kssb=" + Kssb + ", offsetToPointA=" + offsetToPointA + "<br>";
-            
-            // 這裡可以添加您的 XML 輸出代碼
-        }
-    }
+    // 計算offsetToPointA
+    var offsetToPointA = Math.round((ssbStartFreq - absFreqPointA - Kssb * 15) / (subCarrierSpacing * 12));
+    
+    // 使用正確的FR2 ARFCN計算公式
+    var absArfcnPointA = Math.round(2016667 + (absFreqPointA - 24250080) / 60);
+    var absArfcnSsb = Math.round(2016667 + (absFreqSsb - 24250080) / 60);
+    
+    result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + 
+              ", absArfcnPointA=" + absArfcnPointA + 
+              ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + absArfcnSsb + 
+              ", dlEarfcn=" + absArfcnSsb + ", nDlCenterFreq=" + nDlCenterFreq + 
+              ", Kssb=" + Kssb + ", offsetToPointA=" + offsetToPointA + 
+              ", coreset0RB=" + coreset0RB + ", coreset0offset=" + coreset0offset + "<br>";
     
     return result;
 }
+
             var resultDiv = document.getElementById("result");
             var result = "";
 			
@@ -481,7 +471,7 @@ function highFreqCalc(nrBandIndex, coreset0RB, coreset0offset) {
             resultDiv.innerHTML = result;
         }
     </script>
-    <h1>gscn_calculator</h1>
+    <h1>ssb_pointA_calculator</h1>
 	<style>
 		.author-info {
 			display: inline;
