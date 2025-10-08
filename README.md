@@ -1,7 +1,5 @@
-# Online gscn calculator
-● gscn_calculator: https://dustinchen26.github.io/gscn_calculator
-
-● ssb_advance: https://dustinchen26.github.io/ssb_calculator_advance/
+# ssb_pointA calculator
+● ssb_pointA: https://dustinchen26.github.io/ssb_pointA
 
 ## (1) freq to arfcn calculator
 ex:
