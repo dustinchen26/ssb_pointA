@@ -136,17 +136,23 @@ function calculateARFCNToFreq() {
 			
             var offsetToCarrier = 0;
 			
+            // 優先採用的設定 SCS=30,120 kHz
             var nrBand = [
                 {'band' : 41, 'lowest_freq' : 2496000, 'highest_freq' : 2690000, 'lowest_n_ref' : 499200, 'highest_n_ref' : 537996, 'n_ref_step' : 6, 'lowest_gscn' : 6252, 'highest_gscn' : 6714, 'gscn_step' : 3},
-                {'band' : 48, 'lowest_freq' : 3550000, 'highest_freq' : 3700000, 'lowest_n_ref' : 636667, 'highest_n_ref' : 646666, 'n_ref_step' : 1, 'lowest_gscn' : 7884, 'highest_gscn' : 7982, 'gscn_step' : 1},
                 {'band' : 48, 'lowest_freq' : 3550000, 'highest_freq' : 3700000, 'lowest_n_ref' : 636668, 'highest_n_ref' : 646666, 'n_ref_step' : 2, 'lowest_gscn' : 7884, 'highest_gscn' : 7982, 'gscn_step' : 1},
-                {'band' : 78, 'lowest_freq' : 3300000, 'highest_freq' : 3800000, 'lowest_n_ref' : 620000, 'highest_n_ref' : 653333, 'n_ref_step' : 1, 'lowest_gscn' : 7711, 'highest_gscn' : 8051, 'gscn_step' : 1},
                 {'band' : 78, 'lowest_freq' : 3300000, 'highest_freq' : 3800000, 'lowest_n_ref' : 620000, 'highest_n_ref' : 653332, 'n_ref_step' : 2, 'lowest_gscn' : 7711, 'highest_gscn' : 8051, 'gscn_step' : 1},
-                {'band' : 79, 'lowest_freq' : 4400000, 'highest_freq' : 5000000, 'lowest_n_ref' : 693334, 'highest_n_ref' : 733333, 'n_ref_step' : 1, 'lowest_gscn' : 8480, 'highest_gscn' : 8880, 'gscn_step' : 16},
                 {'band' : 79, 'lowest_freq' : 4400000, 'highest_freq' : 5000000, 'lowest_n_ref' : 693334, 'highest_n_ref' : 733332, 'n_ref_step' : 2, 'lowest_gscn' : 8480, 'highest_gscn' : 8880, 'gscn_step' : 16},
-                {'band' : 257, 'lowest_freq' : 26500000, 'highest_freq' : 29500000, 'lowest_n_ref' : 2054166, 'highest_n_ref' : 2104165, 'n_ref_step' : 1, 'lowest_gscn' : 22388, 'highest_gscn' : 22558, 'gscn_step' : 1},
                 {'band' : 257, 'lowest_freq' : 26500000, 'highest_freq' : 29500000, 'lowest_n_ref' : 2054167, 'highest_n_ref' : 2104165, 'n_ref_step' : 2, 'lowest_gscn' : 22390, 'highest_gscn' : 22556, 'gscn_step' : 2}
             ];
+            
+            // 備用設定（如果搜尋不到合理值時使用）SCS=15,60 kHz
+            var backupBands = [
+                {'band' : 48, 'lowest_freq' : 3550000, 'highest_freq' : 3700000, 'lowest_n_ref' : 636667, 'highest_n_ref' : 646666, 'n_ref_step' : 1, 'lowest_gscn' : 7884, 'highest_gscn' : 7982, 'gscn_step' : 1},
+                {'band' : 78, 'lowest_freq' : 3300000, 'highest_freq' : 3800000, 'lowest_n_ref' : 620000, 'highest_n_ref' : 653333, 'n_ref_step' : 1, 'lowest_gscn' : 7711, 'highest_gscn' : 8051, 'gscn_step' : 1},
+                {'band' : 79, 'lowest_freq' : 4400000, 'highest_freq' : 5000000, 'lowest_n_ref' : 693334, 'highest_n_ref' : 733333, 'n_ref_step' : 1, 'lowest_gscn' : 8480, 'highest_gscn' : 8880, 'gscn_step' : 16},
+                {'band' : 257, 'lowest_freq' : 26500000, 'highest_freq' : 29500000, 'lowest_n_ref' : 2054166, 'highest_n_ref' : 2104165, 'n_ref_step' : 1, 'lowest_gscn' : 22388, 'highest_gscn' : 22558, 'gscn_step' : 1}
+            ];
+            
             // 根據頻段自動選擇子載波間隔
             var subCarrierSpacing;
             if (band === 257) {
@@ -388,7 +394,7 @@ function highFreqCalc(nrBandIndex, coreset0RB, coreset0offset) {
             var resultDiv = document.getElementById("result");
             var result = "";
 			
-			// loop for the table index
+			// loop for the table index - 優先使用主要設定
 			var nrBandIndex = -1;
 			for(var t=0; t<nrBand.length; t++)
 			{
@@ -411,16 +417,52 @@ function highFreqCalc(nrBandIndex, coreset0RB, coreset0offset) {
 							break;
 						}
 					}
-					else if (band === 257) {
-						// For n257, prefer n_ref_step=1 version
-						if (nrBand[t]['n_ref_step'] === 1) {
-							nrBandIndex = t;
-							break;
-						}
-					}
 					else {
 						nrBandIndex = t;
 						break;
+					}
+				}
+			}
+			
+			// 如果在主要設定中找不到，嘗試備用設定
+			if (nrBandIndex === -1) {
+				for(var t=0; t<backupBands.length; t++)
+				{
+					if ( band===backupBands[t]['band'] && (freq_low>=backupBands[t]['lowest_freq']) && (freq_high<=backupBands[t]['highest_freq']) )
+					{
+						if( band===79 &&  carrierBw>=106 )
+						{
+							if (backupBands[t]['gscn_step'] === 16) {
+								nrBandIndex = t;
+								// 切換到備用設定
+								nrBand = backupBands;
+								break;
+							}
+						}
+						else if( band===79 &&  carrierBw<106 )
+						{
+							if (backupBands[t]['gscn_step'] === 1) {
+								nrBandIndex = t;
+								// 切換到備用設定
+								nrBand = backupBands;
+								break;
+							}
+						}
+						else if (band === 257) {
+							// For n257, prefer n_ref_step=1 version in backup
+							if (backupBands[t]['n_ref_step'] === 1) {
+								nrBandIndex = t;
+								// 切換到備用設定
+								nrBand = backupBands;
+								break;
+							}
+						}
+						else {
+							nrBandIndex = t;
+							// 切換到備用設定
+							nrBand = backupBands;
+							break;
+						}
 					}
 				}
 			}
