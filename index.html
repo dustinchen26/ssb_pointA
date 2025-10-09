@@ -1,3 +1,4 @@
+
 <!-- 
   Copyright © [2023] [Dustin_Chen]. All rights reserved.
   Author: Dustin Chen
@@ -362,31 +363,68 @@ function calculateARFCNToFreq() {
 function highFreqCalc(nrBandIndex, coreset0RB, coreset0offset) {
     var result = "";
     
-    // 使用與參考網站相同的計算方式
-    var gscn = 22446; // 已知的GSCN值
-    var absFreqSsb = 27533280; // 已知的SSB頻率
+    // 遍歷所有可能的GSCN值
+    for (var gscn = nrBand[nrBandIndex]['lowest_gscn']; gscn <= nrBand[nrBandIndex]['highest_gscn']; gscn += nrBand[nrBandIndex]['gscn_step']) {
+        // FR2的SSB頻率計算公式
+        var absFreqSsb = 24250080 + (gscn - 22256) * 17280;
     
+        // 檢查SSB頻率是否在頻段範圍內
+        if (absFreqSsb < nrBand[nrBandIndex]['lowest_freq'] || absFreqSsb > nrBand[nrBandIndex]['highest_freq']) {
+            continue;
+        }
+        
+        // 直接使用用戶輸入的中心頻率範圍，而不是遍歷整個頻段
+        for (var nDlCenterFreq = freq_low; nDlCenterFreq <= freq_high; nDlCenterFreq += 17280) {
     // 計算 PointA
-    var nDlCenterFreq = 27533280;
-    var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2;
+                var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * subCarrierSpacing;
     
-    // 正確的Kssb計算 (FR2)
-    var ssbStartFreq = absFreqSsb - 10 * 12 * subCarrierSpacing; // SSB起始頻率
-    var Kssb = Math.round((ssbStartFreq - absFreqPointA) % (subCarrierSpacing * 12) / 15);
+            // 檢查PointA是否在頻段範圍內
+            if (absFreqPointA < nrBand[nrBandIndex]['lowest_freq'] || absFreqPointA > nrBand[nrBandIndex]['highest_freq']) {
+                continue;
+            }
+            
+                // 計算SSB起始頻率
+                var ssbStartFreq = absFreqSsb - 10 * 12 * subCarrierSpacing;
     
-    // 計算offsetToPointA
-    var offsetToPointA = Math.round((ssbStartFreq - absFreqPointA - Kssb * 15) / (subCarrierSpacing * 12));
+                // 計算SSB起始頻率與PointA的差值
+                var diff = ssbStartFreq - absFreqPointA;
     
-    // 使用正確的FR2 ARFCN計算公式
-    var absArfcnPointA = Math.round(2016667 + (absFreqPointA - 24250080) / 60);
-    var absArfcnSsb = Math.round(2016667 + (absFreqSsb - 24250080) / 60);
+                // 正確的Kssb計算 (使用15kHz)
+                var Kssb = Math.round((diff % (subCarrierSpacing * 12)) / 15);
     
+                // 計算offsetToPointA (使用15kHz)
+                var offsetToPointA = Math.round((diff - Kssb * 15) / (15 * 12));
+                
+                // 確保Kssb和offsetToPointA為非負整數
+                Kssb = Math.max(0, Kssb);
+                offsetToPointA = Math.max(0, offsetToPointA);
+                
+                // 計算ARFCN值
+                var absArfcnPointA, absArfcnSsb, dlEarfcn;
+                
+                if (subCarrierSpacing === 120) {
+                    // FR2 SCS=120kHz的ARFCN計算
+                    absArfcnPointA = Math.round(2016667 + (absFreqPointA - 24250080) / 60);
+                    absArfcnSsb = Math.round(2016667 + (absFreqSsb - 24250080) / 60);
+                    dlEarfcn = Math.round(2016667 + (nDlCenterFreq - 24250080) / 60);
+                } else {
+                    // FR2 SCS=60kHz的ARFCN計算
+                    absArfcnPointA = Math.round(2054166 + (absFreqPointA - 26500000) / (subCarrierSpacing * 12));
+                    absArfcnSsb = Math.round(2054166 + (absFreqSsb - 26500000) / (subCarrierSpacing * 12));
+                    dlEarfcn = Math.round(2054166 + (nDlCenterFreq - 26500000) / (subCarrierSpacing * 12));
+                }
+                
+                // 檢查配置是否有效
+                if (Kssb >= 0) {
     result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + 
               ", absArfcnPointA=" + absArfcnPointA + 
               ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + absArfcnSsb + 
-              ", dlEarfcn=" + absArfcnSsb + ", nDlCenterFreq=" + nDlCenterFreq + 
+                              ", dlEarfcn=" + dlEarfcn + ", nDlCenterFreq=" + nDlCenterFreq + 
               ", Kssb=" + Kssb + ", offsetToPointA=" + offsetToPointA + 
               ", coreset0RB=" + coreset0RB + ", coreset0offset=" + coreset0offset + "<br>";
+                }
+            }
+        }
     
     return result;
 }
